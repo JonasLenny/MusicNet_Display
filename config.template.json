@@ -1,0 +1,39 @@
+{
+    "project": {
+        "title"          : "MusicNet",
+        "bundleName"     : "musicNet-client.bundle",
+        "mainFile"       : "src/root.js",
+        "server": {
+            "domain"     : "localhost",
+            "port"       : "8080",
+            "api"        : "/api",
+            "ressources" : "/user"
+        },
+        "playerBindings" : [
+            {
+                "type"     : "youtube",
+                "name"     : "YouTube (Test)",
+                "settings" : {
+                    "key": "your.api.key"
+                }
+            },
+            {
+                "type"     : "spotify",
+                "name"     : "Spotify (Test)",
+                "settings" : {
+                    "key": null
+                }
+            }
+        ]
+    },
+    "development": {
+        "dev": {
+            "buildTarget"       : "/build/dev",
+            "reactServerPath"   : "localhost",
+            "reactServerPort"   : 4900
+        },
+        "prod": {
+            "buildTarget"       : "/build/prod"
+        }
+    }
+}
