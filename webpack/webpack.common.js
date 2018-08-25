@@ -27,7 +27,7 @@ let settings = {
                 exclude : /node_modules/,
                 loader  : 'babel-loader?name=/assets/js/[name].[ext]',
                 query   : {
-                    presets        : ['es2015', 'react'],
+                    presets        : ['env', 'react'],
                     cacheDirectory : true,
                 },
             },
