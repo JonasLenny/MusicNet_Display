@@ -8,7 +8,7 @@ class SocketListener {
     constructor(source, valueName, callback) {
         this.className = this.constructor.name
 
-        // console.log(`[${valueName}] add listener`)
+        console.log(`[${valueName}] add listener`)
         // console.log(simSettings)
 
         this.valueName = valueName
@@ -21,7 +21,7 @@ class SocketListener {
     // if new data has been received
     // call the given callback function
     onEvent(event) {
-        // console.log(`[${this.valueName}] event received`)
+        console.log(`[${this.valueName}] event received`)
         this.callback(this.valueName, event)
     }
 }

@@ -5,14 +5,16 @@ import React                 from 'react'
 import { Container }         from 'flux/utils'
 
 // flux stuff
+import WebsocketEvents       from './../data/utils/websocket/websocketEvents'
+import Utils                 from './../data/utils/utils'
+
 import AppStore              from './../data/stores/appStore'
 import AppActions            from './../data/actions/appActions'
 import PlaylistStore         from './../data/stores/playlistStore'
 import PlaylistActions       from './../data/actions/playlistActions'
 import PlaylistActionTypes   from './../data/actions/playlistActionTypes'
 
-import Utils                 from './../data/utils/utils'
-import WebsocketEvents       from './../data/utils/websocket/websocketEvents'
+import Playlist              from './../views/playlist/playlist'
 
 // variables area
 
@@ -20,17 +22,13 @@ class PlaylistContainer extends React.Component {
     constructor() {
         super()
 
-        this.className  = this.constructor.name
-        this.state      = {}
-        this.style      = {
+        this.className = this.constructor.name
+        this.state     = {}
+        this.style     = {
             root: {
+                display : 'flex',
+                width   : '30%' 
             },
-            appContentWrapper: {
-                flex: 1
-            },
-            appContent: {
-                flex: 1
-            }
         }
 
         this.defaultFiles = []
@@ -44,7 +42,7 @@ class PlaylistContainer extends React.Component {
         let event     = WebsocketEvents.SEND_TRACK
         let storePath = ['playlist']
 
-        SearchActions.subscribeTo(path, event, storePath)
+        PlaylistActions.subscribeTo(path, event, storePath)
     }
 
     /*
@@ -53,7 +51,8 @@ class PlaylistContainer extends React.Component {
     */
     static getStores() {
         let stores = [
-            AppStore
+            AppStore,
+            PlaylistStore
         ]
 
         return stores
@@ -65,37 +64,29 @@ class PlaylistContainer extends React.Component {
     */
     static calculateState(prevState) {
         let state = {
-            appStore : AppStore.getState(),
-            setTheme : AppActions.changeTheme
+            appStore      : AppStore.getState(),
+            playlistStore : PlaylistStore.getState()
         }
 
         return state
     }
 
     render() {
-        let appStore = this.state.appStore
-        let theme    = appStore.get('theme')
-
-        let appContentStyle = Object.assign({}, this.style.appContent)
-
-        if(theme) {
-            let palette  = theme.object.palette
-
-            appContentStyle.backgroundColor = palette.primary.main
-        }
+        let appStore      = this.state.appStore
+        let playlistStore = this.state.playlistStore
 
         return (
-            <div id='playlistContent' className='rootContainer' style={this.style.root}>
-
+            <div id='playlistContent' className='' style={this.style.root}>
+                <Playlist {...this.state} />
             </div>
         )
     }
 
-    /*************************************************
+    /***************************************************************************
     *
     *                   help functions
     *
-    *************************************************/
+    ***************************************************************************/
 
 }
 

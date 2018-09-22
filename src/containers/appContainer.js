@@ -15,6 +15,7 @@ import WebsocketEvents       from './../data/utils/websocket/websocketEvents'
 // views/containers
 import Header                from './../views/header'
 import Footer                from './../views/footer'
+import PlaylistContainer     from './playlistContainer'
 
 // css files
 import 'typeface-roboto'
@@ -48,6 +49,10 @@ class AppContainer extends React.Component {
     *
     */
     componentDidMount() {
+        let registration = {
+            type: WebsocketEvents.ROLE_DISPLAY
+        }
+
         for(let entry of this.defaultFiles)
             AppActions.fetchData(entry.id, entry.key, entry.path, entry.data)
 
@@ -55,10 +60,6 @@ class AppContainer extends React.Component {
         AppActions.establishConnection(['config', 'project', 'server', 'api'])
 
         // register this application at the server
-        let registration = {
-            type: WebsocketEvents.ROLE_DISPLAY
-        }
-
         AppActions.registerAtServer(Utils.getUID(), 'registration', ['socket'], registration)
     }
 
@@ -88,9 +89,8 @@ class AppContainer extends React.Component {
     }
 
     render() {
-        let appStore = this.state.appStore
-        let theme    = appStore.get('theme')
-
+        let appStore        = this.state.appStore
+        let theme           = appStore.get('theme')
         let appContentStyle = Object.assign({}, this.style.appContent)
 
         if(theme) {
@@ -108,8 +108,10 @@ class AppContainer extends React.Component {
                         <div id='appContent' className='rootContainer' style={appContentStyle}>
 
                             {/* player container */}
+                            
 
                             {/* playlist container */}
+                            <PlaylistContainer {...this.state} />
 
                             {/* participate container IDEA: the container with QR Code etc. */}
 

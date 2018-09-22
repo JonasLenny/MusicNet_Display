@@ -19,6 +19,7 @@ class AppDataManager {
     constructor() {
         this.className        = this.constructor.name
         this.config           = undefined
+        
         this.getURL           = this.getURL.bind(this)
         this.registerAtServer = this.registerAtServer.bind(this)
     }

@@ -4,10 +4,11 @@
 import Immutable           from 'immutable'
 
 import AbstractStore       from './AbstractStore'
+import AppDispatcher       from './../appDispatcher'
+
 import AppActionTypes      from './../actions/appActionTypes'
 import PlaylistActionTypes from './../actions/playlistActionTypes'
 import PlaylistDataManager from './../dataManagers/playlistDataManager'
-import AppDispatcher       from './../appDispatcher'
 
 import Utils               from './../utils/utils'
 import LoadObjectState     from './../utils/loadObject/loadObjectState'
@@ -19,20 +20,21 @@ class PlaylistStore extends AbstractStore {
     constructor() {
        super(AppDispatcher)
 
-       this.className                 = this.constructor.name
-       this.playlistDataManager       = new PlaylistDataManager()
+       this.className           = this.constructor.name
+       this.playlistDataManager = new PlaylistDataManager()
 
-       this.establishSocketConnection = this.establishSocketConnection.bind(this)
-       this.registerAtServer          = this.registerAtServer.bind(this)
+       this.subscribeTo         = this.subscribeTo.bind(this)
+       this.extendPlaylist      = this.extendPlaylist.bind(this)
     }
 
     getInitialState() {
         let initialState = Immutable.Map({
             socket        : undefined,
+            bindings      : undefined,
             subscriptions : Immutable.Map(),
             buffer        : Immutable.Map(),
             files         : Immutable.Map(),
-            playlist      : Immutable.Map(),
+            playlist      : Immutable.List(),
         })
 
        return initialState
@@ -46,7 +48,6 @@ class PlaylistStore extends AbstractStore {
 
                 let loadObject = new LoadObject(action.id, action.key, undefined, undefined, undefined, action.data)
 
-
                 return state.setIn([action.key], loadObject)
             }
 
@@ -57,9 +58,8 @@ class PlaylistStore extends AbstractStore {
                 let response         = action.loadObject
                 let fetchKey         = response.key
                 let clearedBuffer    = undefined
-                let selectedBindings = this.setDefaultSelection(response.value.bindings)
 
-                state = state.setIn(['selectedBindings'], selectedBindings)
+                // store the availale bindings
                 state = state.setIn(['bindings'], response.value.bindings)
                 state = state.setIn([response.id], response)
 
@@ -72,9 +72,9 @@ class PlaylistStore extends AbstractStore {
                 // console.log(`[${this.className}] ${action.type}`)
                 // console.log(action)
 
-                let isFilePending  = this.isPending(action.path)
-                let func           = this.subscribeTo
-                let updatedState   = state.setIn(['subscriptions', action.event], undefined)
+                let isFilePending = this.isPending(action.path)
+                let func          = this.subscribeTo
+                let updatedState  = state.setIn(['subscriptions', action.event], undefined)
 
                 if(isFilePending) {
                     let bufferName   = action.path[0]
@@ -90,19 +90,29 @@ class PlaylistStore extends AbstractStore {
             }
 
             case PlaylistActionTypes.SUBSCRIBE_RESPONSE: {
-                console.log(`[${this.className}] ${action.type}`)
-                console.log(action)
+                // console.log(`[${this.className}] ${action.type}`)
+                // console.log(action)
 
-                return state.setIn(action.name, action.value)
+                let updatedState = state
+
+                if(action.name === 'playlist')
+                    updatedState = this.extendPlaylist(updatedState, action.value)
+
+                return state.setIn([action.name], updatedState)
             }
+
+            default: {
+               // console.log(`[${this.className}] unknown type`)
+               return state
+           }
        }
     }
 
-    /*************************************************
+    /**************************************************************************
     *
-    *                   help functions
+    *                               help functions
     *
-    *************************************************/
+    **************************************************************************/
 
     subscribeTo(state, action) {
         // console.log(`[${this.className}] subscribeTo ${action.event}`)
@@ -110,6 +120,15 @@ class PlaylistStore extends AbstractStore {
 
         this.playlistDataManager.subscribeTo(action.event, action.storePath)
     }
+
+    extendPlaylist(state, track) {
+        let playlist = state.getIn(['playlist'])
+
+        playlist = playlist.push(track)
+
+        return playlist
+    }
+
 }
 
 export default new PlaylistStore()

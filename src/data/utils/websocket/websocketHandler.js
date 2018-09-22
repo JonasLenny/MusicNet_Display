@@ -48,6 +48,7 @@ class WebSocketHandler {
             this.socket.once(WebsocketEvents.CONNECT_TIMEOUT, this.onConnectTimeout)
             this.socket.once(WebsocketEvents.ERROR, this.onError)
 
+            // TODO: fix this!
             resolve()
         })
 
@@ -55,7 +56,7 @@ class WebSocketHandler {
     }
 
     subscribeTo(name, callback) {
-        // console.log(`[${this.className}] add listener for ${name}`)
+        console.log(`[${this.className}] add listener for ${name}`)
 
         // subscribes to the event name
         this.addSubscription(name)
@@ -72,6 +73,9 @@ class WebSocketHandler {
 
             // this.socket.once(WebsocketEvents.REGISTER_RESPONSE, this.onRegisterResponse)
             this.socket.once(WebsocketEvents.REGISTER_RESPONSE, (response) => {
+                console.log(`[${this.className}] REGISTER_RESPONSE`)
+                console.log(response)
+
                 resolve(response)
             })
 
@@ -131,13 +135,15 @@ class WebSocketHandler {
             func(source, event)
     }
 
-    /*************************************
+    /**************************************************************************
     *
-    *           help functions
+    *                               help functions
     *
-    *************************************/
+    **************************************************************************/
 
     addSubscription(name) {
+        console.log(`[${this.className}] addSubscription`)
+
         let hasSubscription = subscriptions.get(name)
         let subscriber      = undefined
 
@@ -148,6 +154,8 @@ class WebSocketHandler {
     }
 
     addListener(name, func) {
+        console.log(`[${this.className}] addListener`)
+        
         let callbacks = listeners.get(name)
 
         if(!callbacks)

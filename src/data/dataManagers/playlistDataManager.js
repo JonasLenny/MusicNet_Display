@@ -17,10 +17,13 @@ import PlaylistActions  from './../actions/playlistActions'
 
 class PlaylistDataManager {
     constructor() {
-        this.className        = this.constructor.name
-        this.config           = undefined
-        this.getURL           = this.getURL.bind(this)
-        this.registerAtServer = this.registerAtServer.bind(this)
+        this.className              = this.constructor.name
+        this.config                 = undefined
+        this.subscriptions          = new Map()
+
+        this.getURL                 = this.getURL.bind(this)
+        this.subscribeTo            = this.subscribeTo.bind(this)
+        this.onSubscriptionResponse = this.onSubscriptionResponse.bind(this)
     }
 
     subscribeTo(name, target) {
@@ -34,7 +37,7 @@ class PlaylistDataManager {
         console.log(`[${this.className}] event: ${name}`)
         console.log(value)
 
-        let target = this.subscriptions.get(name)
+        let target = this.subscriptions.get(name)[0]
 
         PlaylistActions.subscribeResponse(target, value)
     }
