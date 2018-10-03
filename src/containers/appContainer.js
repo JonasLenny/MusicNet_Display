@@ -1,21 +1,25 @@
 'use strict'
 
 // import area
-import React                 from 'react'
-import { Container }         from 'flux/utils'
+import React             from 'react'
+import { Container }     from 'flux/utils'
 
-import MuiThemeProvider      from '@material-ui/core/styles/MuiThemeProvider'
+import MuiThemeProvider  from '@material-ui/core/styles/MuiThemeProvider'
 
 // flux stuff
-import AppStore              from './../data/stores/appStore'
-import AppActions            from './../data/actions/appActions'
-import Utils                 from './../data/utils/utils'
-import WebsocketEvents       from './../data/utils/websocket/websocketEvents'
+import AppStore          from './../data/stores/appStore'
+import AppActions        from './../data/actions/appActions'
+import Utils             from './../data/utils/utils'
+import WebsocketEvents   from './../data/utils/websocket/websocketEvents'
 
 // views/containers
-import Header                from './../views/header'
-import Footer                from './../views/footer'
-import PlaylistContainer     from './playlistContainer'
+import Header            from './../views/header'
+import Footer            from './../views/footer'
+import PlayerContainer   from './playerContainer'
+import PlaylistContainer from './playlistContainer'
+
+// TODO: find another way to include the bindings
+import Spotify from './../bindings/spotify'
 
 // css files
 import 'typeface-roboto'
@@ -29,13 +33,17 @@ class AppContainer extends React.Component {
         this.className  = this.constructor.name
         this.state      = {}
         this.style      = {
-            root: {
-            },
+            root: {},
             appContentWrapper: {
                 flex: 1
             },
             appContent: {
-                flex: 1
+                flex           : 1,
+                flexDirection  : 'row',
+                justifyContent : 'space-around',
+                paddingTop     : '5%',
+                // paddingLeft    : '5%',
+                paddingRight   : '5%'
             }
         }
 
@@ -61,6 +69,17 @@ class AppContainer extends React.Component {
 
         // register this application at the server
         AppActions.registerAtServer(Utils.getUID(), 'registration', ['socket'], registration)
+
+
+        //
+        // Spotify.init()
+        // .then(() => {
+        //     console.log(`[${this.className}] spotify initliased`)
+        // })
+        // .catch(error => {
+        //     console.warn(`[${this.className}] Error`)
+        //     console.log(error)
+        // })
     }
 
     /*
@@ -108,12 +127,15 @@ class AppContainer extends React.Component {
                         <div id='appContent' className='rootContainer' style={appContentStyle}>
 
                             {/* player container */}
-                            
+                            <PlayerContainer {...this.state} />
 
                             {/* playlist container */}
                             <PlaylistContainer {...this.state} />
 
-                            {/* participate container IDEA: the container with QR Code etc. */}
+                            {/* IDEA: add the player state here */}
+
+                            {/* participate container; IDEA: the container with QR Code etc. */}
+
 
                         </div>
                     <Footer {...this.state} />

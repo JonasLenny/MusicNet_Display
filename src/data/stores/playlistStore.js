@@ -59,8 +59,12 @@ class PlaylistStore extends AbstractStore {
                 let fetchKey         = response.key
                 let clearedBuffer    = undefined
 
+                let bindings         = response.value.bindings
+                let playlist         = Immutable.List(response.value.playlist)
+
                 // store the availale bindings
-                state = state.setIn(['bindings'], response.value.bindings)
+                state = state.setIn(['bindings'], bindings)
+                state = state.setIn(['playlist'], playlist)
                 state = state.setIn([response.id], response)
 
                 clearedBuffer = this.clearBuffer(state, fetchKey)

@@ -26,7 +26,14 @@ class Playlist extends React.Component {
 
         this.style = {
             root: {
-                // backgroundColor : theme.palette.primary.dark
+                width       : '100%',
+            },
+            listContainer: {
+                height      : '65%',
+                marginTop   : '10%',
+                borderLeft  : '1px solid white',
+                borderRight : '1px solid white',
+                // borderColor : 'white',
             },
             text: {
                 marginTop    : '1%',
@@ -53,13 +60,15 @@ class Playlist extends React.Component {
         return (
 
             <div style={this.style.root}>
-                <Typography variant='display1' style={this.style.text}>
-                    Playlist
+                <Typography variant='title' style={this.style.text}>
+                    Next songs...
                 </Typography>
 
-                <List>
-                    { parsedPlaylist }
-                </List>
+                <div style={this.style.listContainer} >
+                    <List>
+                        { parsedPlaylist }
+                    </List>
+                </div>
             </div>
         )
     }

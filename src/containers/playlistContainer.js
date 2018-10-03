@@ -27,7 +27,7 @@ class PlaylistContainer extends React.Component {
         this.style     = {
             root: {
                 display : 'flex',
-                width   : '30%' 
+                width   : '20%'
             },
         }
 

@@ -4,7 +4,7 @@
 // import area
 
 import Utils            from './../utils/utils'
-import XhrHandler       from './../utils/xhrHandler'
+import XhrHandler       from './../utils/fetchHandler'
 import WebSocketHandler from './../utils/websocket/websocketHandler'
 import LoadObject       from './../utils/loadObject/loadObject'
 import LoadObjectState  from './../utils/loadObject/loadObjectState'
@@ -19,7 +19,7 @@ class AppDataManager {
     constructor() {
         this.className        = this.constructor.name
         this.config           = undefined
-        
+
         this.getURL           = this.getURL.bind(this)
         this.registerAtServer = this.registerAtServer.bind(this)
     }
@@ -36,7 +36,7 @@ class AppDataManager {
         XhrHandler.promiseGET(path, file)
         .then(response => {
             loadObject = loadObject.updateValue(response.body)
-            loadObject = loadObject.setSuccess(response.rawRequest.statusText)
+            loadObject = loadObject.setSuccess(response.statusText)
 
             AppActions.fetchDataResponse(id, loadObject)
         })
@@ -50,8 +50,8 @@ class AppDataManager {
             if(error.body)
                 errorBody = error.body
 
-            if(error.rawRequest && error.rawRequest.statusText)
-                errorStatus = error.rawRequest.statusText
+            if(error.statusText)
+                errorStatus = error.statusText
 
             loadObject = loadObject.updateValue(errorBody)
             loadObject = loadObject.setError(errorStatus)

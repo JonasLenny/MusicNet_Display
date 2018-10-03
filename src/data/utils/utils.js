@@ -20,13 +20,25 @@ class Utils {
         let isEndOfArray  = path.length == 0
         let isEmptySource = source == undefined
 
-        let nextProperty  = path.shift()
-        let subSource     = source[nextProperty]
+        let nextProperty  = undefined
+        let subSource     = undefined
 
-        if(!isEndOfArray && !isEmptySource)
-            return this.getObjectEntry(subSource, path)
-        else
+        if(isEndOfArray || isEmptySource)
             return entry
+        else {
+            nextProperty  = path.shift()
+            subSource     = source[nextProperty]
+
+            return this.getObjectEntry(subSource, path)
+        }
+    }
+
+    getFileType(file) {
+        let type = ''
+
+        type = file.substring(file.lastIndexOf(".") + 1)
+
+        return type
     }
 }
 

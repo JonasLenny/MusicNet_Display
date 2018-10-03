@@ -4,15 +4,18 @@
 import React                 from 'react'
 import { Container }         from 'flux/utils'
 
-import MuiThemeProvider      from '@material-ui/core/styles/MuiThemeProvider'
-
-// flux stuff
-import AppStore              from './../data/stores/appStore'
-import AppActions            from './../data/actions/appActions'
-
+import Typography            from '@material-ui/core/Typography'
 
 import Utils                 from './../data/utils/utils'
 import WebsocketEvents       from './../data/utils/websocket/websocketEvents'
+
+import AppStore              from './../data/stores/appStore'
+import AppActions            from './../data/actions/appActions'
+import PlaylistStore         from './../data/stores/playlistStore'
+import PlaylistActions       from './../data/actions/playlistActions'
+import PlaylistActionTypes   from './../data/actions/playlistActionTypes'
+
+import Player                from './../views/player/player'
 
 // views/containers
 
@@ -26,6 +29,8 @@ class PlayerContainer extends React.Component {
         this.state      = {}
         this.style      = {
             root: {
+                width       : '60%',
+                paddingTop  : '4%'
             },
             appContentWrapper: {
                 flex: 1
@@ -35,15 +40,18 @@ class PlayerContainer extends React.Component {
             }
         }
 
-        this.defaultFiles = []
+        this.defaultFiles = [
+            // { id: Utils.getUID(), key: 'placeholder', path: 'assets/images/', data: 'placeholder.png' },
+            // { id: Utils.getUID(), key: 'themes', path: 'assets/themes', data: '' }
+        ]
     }
 
     /*
     *
     */
     componentDidMount() {
-
-        // AppActions.registerAtServer(Utils.getUID(), 'registration', ['socket'], registration)
+        for(let entry of this.defaultFiles)
+            AppActions.fetchData(entry.id, entry.key, entry.path, entry.data)
     }
 
     /*
@@ -52,7 +60,8 @@ class PlayerContainer extends React.Component {
     */
     static getStores() {
         let stores = [
-            AppStore
+            AppStore,
+            PlaylistStore
         ]
 
         return stores
@@ -64,8 +73,8 @@ class PlayerContainer extends React.Component {
     */
     static calculateState(prevState) {
         let state = {
-            appStore : AppStore.getState(),
-            setTheme : AppActions.changeTheme
+            appStore      : AppStore.getState(),
+            playlistStore : PlaylistStore.getState(),
         }
 
         return state
@@ -76,9 +85,7 @@ class PlayerContainer extends React.Component {
             <div className='flexContainer' style={this.style.root}>
 
                 {/* player object */}
-                <div id='playerContent'>
-
-                </div>
+                <Player {...this.state} />
 
                 {/* current state */}
 

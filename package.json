@@ -1,6 +1,6 @@
 {
   "name": "musicNetDisplay",
-  "version": "0.2.12",
+  "version": "0.2.20",
   "description": "This is the component to run the player.",
   "main": "src/app.js",
   "scripts": {
