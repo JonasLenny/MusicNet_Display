@@ -76,7 +76,16 @@ const Actions = {
             type: AppActionTypes.REGISTER_AT_SERVER_RESPONSE,
             loadObject
         })
+    },
+
+    waitFor(path, callback) {
+        AppDispatcher.dispatch({
+            type: AppActionTypes.WAIT_FOR,
+            path,
+            callback
+        })
     }
+
 }
 
 export default Actions

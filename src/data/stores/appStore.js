@@ -28,6 +28,7 @@ class AppStore extends AbstractStore {
 
        this.establishSocketConnection = this.establishSocketConnection.bind(this)
        this.registerAtServer          = this.registerAtServer.bind(this)
+       this.waitFor                   = this.waitFor.bind(this)
     }
 
     getInitialState() {
@@ -148,7 +149,7 @@ class AppStore extends AbstractStore {
                 let isFilePending  = this.isPending(action.path)
                 let func           = this.registerAtServer
                 let loadObject     = new LoadObject(action.id, action.key, undefined, undefined, undefined, action.data)
-                let updatedState   = state.setIn(['files', action.id], loadObject)
+                let updatedState   = state.setIn(['files', action.key], loadObject)
 
                 if(isFilePending) {
                     let bufferName   = action.path[0]
@@ -171,10 +172,29 @@ class AppStore extends AbstractStore {
                 let fetchKey      = response.key
                 let clearedBuffer = undefined
 
-                state         = state.setIn([response.id], response)
+                state         = state.setIn([response.key], response)
                 clearedBuffer = this.clearBuffer(state, fetchKey)
 
                 return state.setIn(['buffer', fetchKey], clearedBuffer)
+            }
+
+            case AppActionTypes.WAIT_FOR: {
+                console.log(`[${this.className}] ${action.type}`)
+                console.log(action)
+
+                let isFilePending  = this.isPending(action.path)
+                let func           = this.waitFor
+
+                if(isFilePending) {
+                    let bufferName   = action.path[0]
+                    let bufferedList = this.addToBuffer(action, func)
+
+                    return state.setIn(['buffer', bufferName], bufferedList)
+                }
+                else {
+
+                    return state
+                }
             }
 
             default: {
@@ -211,6 +231,12 @@ class AppStore extends AbstractStore {
         let registrationObject = this.getFile(state, action.key)
 
         this.appDataManager.registerAtServer(registrationObject, action.data)
+    }
+
+    waitFor(state, action) {
+        let file = state.getIn(action.path).value
+
+        action.callback(file)
     }
 }
 

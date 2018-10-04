@@ -20,9 +20,8 @@ class Player extends React.Component {
                 display        : 'flex',
                 width          : '80%',
                 height         : '70%',
-                borderStyle    : 'solid',
-                borderWidth    : '1px',
-                borderColor    : 'white',
+                borderTop      : '1px solid white',
+                borderBottom   : '1px solid white',
                 alignItems     : 'center',
                 justifyContent : 'center'
             },
@@ -43,7 +42,7 @@ class Player extends React.Component {
         return (
             <div style={this.style.root}>
                 <Typography variant='display1' style={this.style.text}>
-                    Player
+                    Add a track
                 </Typography>
             </div>
         )

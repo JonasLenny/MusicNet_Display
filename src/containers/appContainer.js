@@ -19,7 +19,7 @@ import PlayerContainer   from './playerContainer'
 import PlaylistContainer from './playlistContainer'
 
 // TODO: find another way to include the bindings
-import Spotify from './../bindings/spotify'
+import Spotify           from './../bindings/spotify'
 
 // css files
 import 'typeface-roboto'
@@ -51,6 +51,8 @@ class AppContainer extends React.Component {
             { id: Utils.getUID(), key: 'config', path: '', data: 'config.json' },
             // { id: Utils.getUID(), key: 'themes', path: 'assets/themes', data: '' }
         ]
+
+        this.initBindings = this.initBindings.bind(this)
     }
 
     /*
@@ -70,16 +72,7 @@ class AppContainer extends React.Component {
         // register this application at the server
         AppActions.registerAtServer(Utils.getUID(), 'registration', ['socket'], registration)
 
-
-        //
-        // Spotify.init()
-        // .then(() => {
-        //     console.log(`[${this.className}] spotify initliased`)
-        // })
-        // .catch(error => {
-        //     console.warn(`[${this.className}] Error`)
-        //     console.log(error)
-        // })
+        AppActions.waitFor(['registration'], this.initBindings)
     }
 
     /*
@@ -150,6 +143,19 @@ class AppContainer extends React.Component {
     *                   help functions
     *
     *************************************************/
+
+    initBindings(registration) {
+        console.log(`[${this.className}] wait for response received`)
+        console.log(registration)
+        let bindings = registration.bindings
+
+        for(let entry of bindings) {
+            // import(`./../bindings/${entry.name}`)
+            // .then(module => {
+            //     console.log(module)
+            // })
+        }
+    }
 
 }
 
